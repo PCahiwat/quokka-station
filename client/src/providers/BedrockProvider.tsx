@@ -2,6 +2,7 @@ import { BedrockPassportProvider } from "@bedrock_org/passport";
 import { http, createConfig, WagmiProvider } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Component, type ErrorInfo, type ReactNode } from "react";
 
 const wagmiQueryClient = new QueryClient();
 
@@ -11,6 +12,32 @@ const config = createConfig({
     [mainnet.id]: http(),
   },
 });
+
+// Error boundary to catch Bedrock SDK crashes
+class BedrockErrorBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: ReactNode; fallback: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("Bedrock SDK error:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
 
 interface Props {
   children: React.ReactNode;
@@ -44,12 +71,14 @@ export default function BedrockProvider({ children }: Props) {
   }
 
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={wagmiQueryClient}>
-        <BedrockPassportProvider {...bedrockProps}>
-          {children}
-        </BedrockPassportProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <BedrockErrorBoundary fallback={<>{children}</>}>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={wagmiQueryClient}>
+          <BedrockPassportProvider {...bedrockProps}>
+            {children}
+          </BedrockPassportProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </BedrockErrorBoundary>
   );
 }

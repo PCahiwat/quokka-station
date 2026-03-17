@@ -3,14 +3,21 @@ import { useEffect, useRef } from "react";
 import { apiRequest } from "@/lib/queryClient";
 
 export function useAuth() {
-  let passport: any = {};
+  let user: any = null;
+  let isLoggedIn = false;
+  let signOut: () => void = () => {};
+
   try {
-    passport = useBedrockPassport();
+    const passport = useBedrockPassport();
+    if (passport) {
+      user = passport.user || null;
+      isLoggedIn = !!passport.isLoggedIn;
+      signOut = passport.signOut || (() => {});
+    }
   } catch {
-    // Bedrock not initialized
+    // Bedrock not initialized — auth disabled
   }
 
-  const { user, isLoggedIn, signOut } = passport;
   const syncedRef = useRef(false);
 
   // Sync user to backend on login
@@ -31,8 +38,8 @@ export function useAuth() {
   }, [user, isLoggedIn]);
 
   return {
-    user: user || null,
-    isLoggedIn: !!isLoggedIn,
-    signOut: signOut || (() => {}),
+    user,
+    isLoggedIn,
+    signOut,
   };
 }
