@@ -193,27 +193,58 @@ export default function Home() {
           <section className="py-12 sm:py-20 px-4 sm:px-6 pb-16 sm:pb-32">
             <div className="max-w-[960px] mx-auto">
               <p className="font-orbitron text-xs font-medium tracking-[0.3em] uppercase text-[#40d0d0] mb-8 text-center">Access Points</p>
+              {!isLoggedIn && (
+                <p className="text-center text-sm text-[#8888aa] mb-6">Sign in to access classified files.</p>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <a href="https://sites.google.com/view/agent-profiles" target="_blank" rel="noopener noreferrer"
-                  className="group flex flex-col items-center text-center no-underline bg-[#0f1120] border border-[#2a2d50] rounded-xl p-8 sm:p-10 hover:border-[#40d0d0] hover:shadow-[0_8px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(64,208,208,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
-                  data-testid="link-agent-profiles"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#40d0d0] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="w-16 h-16 rounded-lg flex items-center justify-center text-3xl mb-5 bg-[#40d0d0]/[0.08] border border-[#40d0d0]/[0.15]">🧑‍🚀</div>
-                  <h3 className="font-orbitron text-lg font-bold tracking-[0.08em] uppercase text-[#40d0d0] mb-3">Agent Profiles</h3>
-                  <p className="text-sm text-[#8888aa] leading-relaxed mb-5">Review the full roster — 24 operatives and their roles, gear, and legendary achievements.</p>
-                  <span className="inline-flex items-center gap-2 font-orbitron text-xs font-semibold tracking-[0.15em] uppercase text-[#40d0d0] group-hover:gap-3 transition-all">View Roster →</span>
-                </a>
-                <a href="https://sites.google.com/view/quokkamissionarchives2026" target="_blank" rel="noopener noreferrer"
-                  className="group flex flex-col items-center text-center no-underline bg-[#0f1120] border border-[#2a2d50] rounded-xl p-8 sm:p-10 hover:border-[#a855f7] hover:shadow-[0_8px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(168,85,247,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
-                  data-testid="link-mission-archives"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#a855f7] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="w-16 h-16 rounded-lg flex items-center justify-center text-3xl mb-5 bg-[#a855f7]/[0.08] border border-[#a855f7]/[0.15]">📋</div>
-                  <h3 className="font-orbitron text-lg font-bold tracking-[0.08em] uppercase text-[#a855f7] mb-3">Mission Archives</h3>
-                  <p className="text-sm text-[#8888aa] leading-relaxed mb-5">Browse the complete log of QUOKKA ops — from Penthouse New Year to The Eternal Citadel.</p>
-                  <span className="inline-flex items-center gap-2 font-orbitron text-xs font-semibold tracking-[0.15em] uppercase text-[#a855f7] group-hover:gap-3 transition-all">Open Archives →</span>
-                </a>
+                {isLoggedIn ? (
+                  <a href="https://sites.google.com/view/agent-profiles" target="_blank" rel="noopener noreferrer"
+                    className="group flex flex-col items-center text-center no-underline bg-[#0f1120] border border-[#2a2d50] rounded-xl p-8 sm:p-10 hover:border-[#40d0d0] hover:shadow-[0_8px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(64,208,208,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+                    data-testid="link-agent-profiles"
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#40d0d0] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-16 h-16 rounded-lg flex items-center justify-center text-3xl mb-5 bg-[#40d0d0]/[0.08] border border-[#40d0d0]/[0.15]">🧑‍🚀</div>
+                    <h3 className="font-orbitron text-lg font-bold tracking-[0.08em] uppercase text-[#40d0d0] mb-3">Agent Profiles</h3>
+                    <p className="text-sm text-[#8888aa] leading-relaxed mb-5">Review the full roster — 24 operatives and their roles, gear, and legendary achievements.</p>
+                    <span className="inline-flex items-center gap-2 font-orbitron text-xs font-semibold tracking-[0.15em] uppercase text-[#40d0d0] group-hover:gap-3 transition-all">View Roster →</span>
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => setShowLogin(true)}
+                    className="group flex flex-col items-center text-center bg-[#0f1120] border border-[#2a2d50] rounded-xl p-8 sm:p-10 hover:border-[#40d0d0] hover:shadow-[0_8px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(64,208,208,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                    data-testid="link-agent-profiles-locked"
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#40d0d0] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-16 h-16 rounded-lg flex items-center justify-center text-3xl mb-5 bg-[#40d0d0]/[0.08] border border-[#40d0d0]/[0.15]">🔒</div>
+                    <h3 className="font-orbitron text-lg font-bold tracking-[0.08em] uppercase text-[#40d0d0] mb-3">Agent Profiles</h3>
+                    <p className="text-sm text-[#8888aa] leading-relaxed mb-5">Sign in to view the full roster of QUOKKA operatives.</p>
+                    <span className="inline-flex items-center gap-2 font-orbitron text-xs font-semibold tracking-[0.15em] uppercase text-[#40d0d0]">Sign In to Access →</span>
+                  </button>
+                )}
+                {isLoggedIn ? (
+                  <a href="https://sites.google.com/view/quokkamissionarchives2026" target="_blank" rel="noopener noreferrer"
+                    className="group flex flex-col items-center text-center no-underline bg-[#0f1120] border border-[#2a2d50] rounded-xl p-8 sm:p-10 hover:border-[#a855f7] hover:shadow-[0_8px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(168,85,247,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+                    data-testid="link-mission-archives"
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#a855f7] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-16 h-16 rounded-lg flex items-center justify-center text-3xl mb-5 bg-[#a855f7]/[0.08] border border-[#a855f7]/[0.15]">📋</div>
+                    <h3 className="font-orbitron text-lg font-bold tracking-[0.08em] uppercase text-[#a855f7] mb-3">Mission Archives</h3>
+                    <p className="text-sm text-[#8888aa] leading-relaxed mb-5">Browse the complete log of QUOKKA ops — from Penthouse New Year to The Eternal Citadel.</p>
+                    <span className="inline-flex items-center gap-2 font-orbitron text-xs font-semibold tracking-[0.15em] uppercase text-[#a855f7] group-hover:gap-3 transition-all">Open Archives →</span>
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => setShowLogin(true)}
+                    className="group flex flex-col items-center text-center bg-[#0f1120] border border-[#2a2d50] rounded-xl p-8 sm:p-10 hover:border-[#a855f7] hover:shadow-[0_8px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(168,85,247,0.15)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                    data-testid="link-mission-archives-locked"
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#a855f7] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-16 h-16 rounded-lg flex items-center justify-center text-3xl mb-5 bg-[#a855f7]/[0.08] border border-[#a855f7]/[0.15]">🔒</div>
+                    <h3 className="font-orbitron text-lg font-bold tracking-[0.08em] uppercase text-[#a855f7] mb-3">Mission Archives</h3>
+                    <p className="text-sm text-[#8888aa] leading-relaxed mb-5">Sign in to browse the complete log of QUOKKA operations.</p>
+                    <span className="inline-flex items-center gap-2 font-orbitron text-xs font-semibold tracking-[0.15em] uppercase text-[#a855f7]">Sign In to Access →</span>
+                  </button>
+                )}
               </div>
             </div>
           </section>
