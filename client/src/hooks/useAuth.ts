@@ -1,5 +1,5 @@
 import { useBedrockPassport } from "@bedrock_org/passport";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { apiRequest } from "@/lib/queryClient";
 
 export function useAuth() {
@@ -19,23 +19,29 @@ export function useAuth() {
   }
 
   const syncedRef = useRef(false);
+  const userIdRef = useRef<string | null>(null);
 
-  // Sync user to backend on login
+  // Sync user to backend ONCE per unique user ID
+  const userId = user?.id || null;
+
   useEffect(() => {
-    if (user && isLoggedIn && !syncedRef.current) {
-      syncedRef.current = true;
-      apiRequest("POST", "/api/users", {
-        id: user.id,
-        email: user.email || null,
-        name: user.name || null,
-        displayName: user.displayName || null,
-        picture: user.picture || null,
-        ethAddress: user.ethAddress || null,
-        provider: user.provider || null,
-        createdAt: user.createdAt || null,
-      }).catch(console.error);
+    if (userId && isLoggedIn && userId !== userIdRef.current) {
+      userIdRef.current = userId;
+      if (!syncedRef.current) {
+        syncedRef.current = true;
+        apiRequest("POST", "/api/users", {
+          id: user.id,
+          email: user.email || null,
+          name: user.name || null,
+          displayName: user.displayName || null,
+          picture: user.picture || null,
+          ethAddress: user.ethAddress || null,
+          provider: user.provider || null,
+          createdAt: user.createdAt || null,
+        }).catch(console.error);
+      }
     }
-  }, [user, isLoggedIn]);
+  }, [userId, isLoggedIn]);
 
   return {
     user,

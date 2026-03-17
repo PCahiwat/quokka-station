@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useBedrockPassport } from "@bedrock_org/passport";
 
 export default function AuthCallback() {
@@ -10,25 +10,30 @@ export default function AuthCallback() {
     // Bedrock not available
   }
 
+  const processedRef = useRef(false);
+
   useEffect(() => {
-    // Tokens may be in the main URL query string (from server redirect)
-    // or in the hash portion — check both
+    if (processedRef.current) return;
+
     const mainParams = new URLSearchParams(window.location.search);
     const token = mainParams.get("token");
     const refreshToken = mainParams.get("refreshToken");
 
     if (token && refreshToken && loginCallback) {
+      processedRef.current = true;
       loginCallback(token, refreshToken).then((success: boolean) => {
         if (success) {
           window.location.href = window.location.origin + window.location.pathname + "#/";
         }
       });
-    } else {
-      // No tokens found, redirect home after a moment
+    } else if (!token || !refreshToken) {
+      // No tokens at all — redirect home
+      processedRef.current = true;
       setTimeout(() => {
         window.location.href = window.location.origin + window.location.pathname + "#/";
       }, 2000);
     }
+    // If tokens exist but loginCallback isn't ready yet, wait for next render
   }, [loginCallback]);
 
   return (
