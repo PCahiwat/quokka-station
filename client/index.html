@@ -17,7 +17,6 @@
     <link rel="author" href="https://www.perplexity.ai/computer">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'unsafe-inline' https: http:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src *; img-src * data: blob:; frame-src *;" />
     <title>Quokka Station — Central Command</title>
     <meta name="description" content="Central command hub for all QUOKKA operations. Review your team, study the mission logs, and stay sharp." />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -27,27 +26,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      // Storage shim for sandboxed deployment
-      (function() {
-        var ks = ['local','session'], m = {};
-        ks.forEach(function(p) {
-          var n = p + 'Storage';
-          try { window[n].setItem('_t','1'); window[n].removeItem('_t'); } catch(e) {
-            var s = {};
-            var obj = {
-              getItem: function(k) { return s[k] !== undefined ? s[k] : null; },
-              setItem: function(k, v) { s[k] = String(v); },
-              removeItem: function(k) { delete s[k]; },
-              clear: function() { s = {}; },
-              get length() { return Object.keys(s).length; },
-              key: function(i) { return Object.keys(s)[i] || null; }
-            };
-            try { Object.defineProperty(window, n, { value: obj, configurable: true }); } catch(e2) {}
-          }
-        });
-      })();
-    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
