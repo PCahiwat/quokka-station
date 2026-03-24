@@ -22,6 +22,37 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+// Security headers
+app.use((_req, res, next) => {
+  // HSTS — enforce HTTPS for 1 year, include subdomains
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+
+  // CSP — allow Bedrock SDK, Google Fonts, and WalletConnect resources
+  res.setHeader("Content-Security-Policy", [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https:",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.azurefd.net",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src * data: blob:",
+    "connect-src *",
+    "frame-src *",
+  ].join("; "));
+
+  // Prevent clickjacking — allow same-origin framing only
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+
+  // Prevent MIME type sniffing
+  res.setHeader("X-Content-Type-Options", "nosniff");
+
+  // Control referrer information
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+
+  // Restrict browser features
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+
+  next();
+});
+
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
